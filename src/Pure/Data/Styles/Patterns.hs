@@ -210,6 +210,9 @@ pattern ZIndex v a = Style "z-index" v a
 pattern Display :: HasFeatures a => Txt -> a -> a
 pattern Display v a = Style "display" v a
 
+pattern Float :: HasFeatures a => Txt -> a -> a
+pattern Float v a = Style "float" v a
+
 pattern TableCaption :: HasFeatures a => Txt -> a -> a
 pattern TableCaption v a = Style "table-caption" v a
 
