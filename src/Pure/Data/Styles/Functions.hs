@@ -49,7 +49,7 @@ infixl 5 <#>
 (<#>) = toAppendable
 
 percent :: Real a => a -> Txt
-percent p = (dec p <> per)
+percent p = (dec p <> "%")
 
 mils :: Real a => a -> Txt
 mils ms = rtf ms ("ms" :: Txt)
