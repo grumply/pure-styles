@@ -23,6 +23,7 @@ library
 
   exposed-modules:
     Pure.Data.Styles
+    Pure.Data.Styles.Functions
+    Pure.Data.Styles.Orphans
     Pure.Data.Styles.Patterns
-
   default-language: Haskell2010

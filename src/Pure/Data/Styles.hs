@@ -1,387 +1,333 @@
-{-# language OverloadedStrings #-}
-{-# language CPP #-}
-module Pure.Data.Styles where
+{-# language OverloadedStrings, ViewPatterns #-}
+module Pure.Data.Styles (module Pure.Data.Styles, module Export) where
 
-import Pure.Data.Txt (Txt,ToTxt(..),FromTxt(..))
-import qualified Pure.Data.Txt as Txt
+import Pure.Data.Styles.Functions as Export
+import Pure.Data.Styles.Orphans as Export
 
-import Data.Monoid
+import Pure.Data.Txt
 
-import Prelude (($),id,map,Int,Double,Num(..))
+import Data.List as List
+import GHC.Exts (IsList(..))
+import Numeric (showHex)
 
-infixr 6 <&>>
-(<&>>) :: Txt -> Txt -> Txt
-(<&>>) x y = x <> ", " <> y
+display :: Txt
+display = "display"
 
-infixr 6 <+>
-(<+>) :: Txt -> Txt -> Txt
-(<+>) x y = x <> "+" <> y
+inline :: Txt
+inline = "inline"
 
-infixr 6 <->
-(<->) :: Txt -> Txt -> Txt
-(<->) x y = x <> "-" <> y
+block :: Txt
+block = "block"
 
-infixr 6 <<+>>
-(<<+>>) :: Txt -> Txt -> Txt
-(<<+>>) x y = x <> " + " <> y
+flex :: Txt
+flex = "flex"
 
-infixr 6 <<*>>
-(<<*>>) :: Txt -> Txt -> Txt
-(<<*>>) x y = x <> " * " <> y
+flexbox :: Txt
+flexbox = "flexbox"
 
-infixr 6 <</>>
-(<</>>) :: Txt -> Txt -> Txt
-(<</>>) x y = x <> " / " <> y
+contents :: Txt
+contents = "contents"
 
-infixr 6 <<->>
-(<<->>) :: Txt -> Txt -> Txt
-(<<->>) x y = x <> " - " <> y
+table :: Txt
+table = "table"
 
-infixr 6 <<>>
-(<<>>) :: Txt -> Txt -> Txt
-(<<>>) x y = x <> " " <> y
+list :: Txt
+list = "list"
 
-infixr 6 <.>
-(<.>) :: Txt -> Txt -> Txt
-(<.>) x y = x <> "." <> y
+runin :: Txt
+runin = "run-in"
 
-infixr 6 <<.>
-(<<.>) :: Txt -> Txt -> Txt
-(<<.>) x y = x <> " ." <> y
+caption :: Txt
+caption = "caption"
 
-infixr 6 <.>>
-(<.>>) :: Txt -> Txt -> Txt
-(<.>>) x y = x <> ". " <> y
+group :: Txt
+group = "group"
 
-screenMinWidth :: Txt -> Txt
-screenMinWidth w = "only screen and (min-width:" <> w <> ")"
+visibility :: Txt
+visibility = "visibility"
 
-allMinWidth :: Txt -> Txt
-allMinWidth w = "all and (min-width" <> w <> ")"
+overflow :: Txt
+overflow = "overflow"
 
-screenMaxWidth :: Txt -> Txt
-screenMaxWidth w = "only screen and (max-width:" <> w <> ")"
+x :: Txt
+x = "x"
 
-allMaxWidth :: Txt -> Txt
-allMaxWidth w = "all and (max-width:" <> w <> ")"
+y :: Txt
+y = "y"
 
-emptyQuotes :: Txt
-emptyQuotes = "\"\""
+z :: Txt
+z = "z"
 
-noBreakSpace :: Txt
-noBreakSpace = "\"\\00a0\""
+visible :: Txt
+visible = "visible"
 
-true :: Txt
-true = "true"
+hidden :: Txt
+hidden = "hidden"
 
-false :: Txt
-false = "false"
+cell :: Txt
+cell = "cell"
 
-color :: Txt
-color = "color"
+flow :: Txt
+flow = "flow"
 
-bgcolor :: Txt
-bgcolor = "bgcolor"
+context :: Txt
+context = "context"
 
-border :: Txt
-border = "border"
+menu :: Txt
+menu = "menu"
 
-sizes :: Txt
-sizes = "sizes"
+column :: Txt
+column = "column"
 
-srcset :: Txt
-srcset = "srcset"
-
-subject :: Txt
-subject = "subject"
-
-valign :: Txt
-valign = "valign"
-
-none :: Txt
-none = "none"
-
-button :: Txt
-button = "button"
-
-zero :: Txt
-zero = "0"
-
-one :: Txt
-one = "1"
-
-two :: Txt
-two = "2"
-
-negativeOne :: Txt
-negativeOne = "-1"
-
-initial :: Txt
-initial = "initial"
-
-inherit :: Txt
-inherit = "inherit"
-
-auto :: Txt
-auto = "auto"
-
-forwards :: Txt
-forwards = "forwards"
-
-backwards :: Txt
-backwards = "backwards"
-
-center :: Txt
-center = "center"
-
-normal :: Txt
-normal = "normal"
-
-neg :: Txt -> Txt
-neg i = "-" <> i
-
-vhs :: Int -> Txt
-vhs i = toTxt i <> "vh"
-
-vws :: Int -> Txt
-vws i = toTxt i <> "vw"
-
-vms :: Int -> Txt
-vms i = toTxt i <> "vm"
-
-int :: Int -> Txt
-int = toTxt
-
-dec :: Double -> Txt
-dec = toTxt
-
-sec :: Double -> Txt
-sec n = (toTxt n) <> "s"
-
-ms :: Int -> Txt
-ms n = toTxt n <> "ms"
-
-per :: Double -> Txt
-per n = toTxt n <> "%"
-
-deg :: Double -> Txt
-deg n = toTxt n <> "deg"
-
-per2 :: Double -> Double -> Txt
-per2 n1 n2 = per n1 <<>> per n2
-
-per3 :: Double -> Double -> Double -> Txt
-per3 n1 n2 n3 = per n1 <<>> per n2 <<>> per n3
-
-per4 :: Double -> Double -> Double -> Double -> Txt
-per4 n1 n2 n3 n4 = per n1 <<>> per n2 <<>> per n3 <<>> per n4
-
-pxs :: Int -> Txt
-pxs n = int n <> "px"
-
-pxs2 :: Int -> Int -> Txt
-pxs2 n1 n2 = pxs n1 <<>> pxs n2
-
-pxs3 :: Int -> Int -> Int -> Txt
-pxs3 n1 n2 n3 = pxs n1 <<>> pxs n2 <<>> pxs n3
-
-pxs4 :: Int -> Int -> Int -> Int -> Txt
-pxs4 n1 n2 n3 n4 = pxs n1 <<>> pxs n2 <<>> pxs n3 <<>> pxs n4
-
-ems :: Double -> Txt
-ems n = dec n <> "em"
-
-ems2 :: Double -> Double -> Txt
-ems2 n1 n2 = ems n1 <<>> ems n2
-
-ems3 :: Double -> Double -> Double -> Txt
-ems3 n1 n2 n3 = ems n1 <<>> ems n2 <<>> ems n3
-
-ems4 :: Double -> Double -> Double -> Double -> Txt
-ems4 n1 n2 n3 n4 = ems n1 <<>> ems n2 <<>> ems n3 <<>> ems n4
-
-rems :: Double -> Txt
-rems n = dec n <> "rem"
-
-rems2 :: Double -> Double -> Txt
-rems2 n1 n2 = rems n1 <<>> rems n2
-
-rems3 :: Double -> Double -> Double -> Txt
-rems3 n1 n2 n3 = rems n1 <<>> rems n2 <<>> rems n3
-
-rems4 :: Double -> Double -> Double -> Double -> Txt
-rems4 n1 n2 n3 n4 = rems n1 <<>> rems n2 <<>> rems n3 <<>> rems n4
-
-individual :: Txt -> Txt
-individual = ("#" <>)
-
-classified :: Txt -> Txt
-classified = ("." <>)
+columns :: Txt
+columns = "columns"
 
 content :: Txt
 content = "content"
 
-touchAction :: Txt
-touchAction = "touch-action"
+place :: Txt
+place = "place"
 
-pointerEvents :: Txt
-pointerEvents = "pointer-events"
+row :: Txt
+row = "row"
 
-margin :: Txt
-margin = "margin"
+rows :: Txt
+rows = "rows"
 
-marginLeft :: Txt
-marginLeft = "margin-left"
+item :: Txt
+item = "item"
 
-marginRight :: Txt
-marginRight = "margin-right"
+items :: Txt
+items = "items"
 
-marginTop :: Txt
-marginTop = "margin-top"
+justify :: Txt
+justify = "justify"
 
-marginBottom :: Txt
-marginBottom = "margin-bottom"
+gap :: Txt
+gap = "gap"
 
-padding :: Txt
-padding = "padding"
+template :: Txt
+template = "template"
 
-paddingLeft :: Txt
-paddingLeft = "padding-left"
+area :: Txt
+area = "area"
 
-paddingRight :: Txt
-paddingRight = "padding-right"
+areas :: Txt
+areas = "areas"
 
-paddingTop :: Txt
-paddingTop = "padding-top"
+dense :: Txt
+dense = "dense"
 
-paddingBottom :: Txt
-paddingBottom = "padding-bottom"
+start :: Txt
+start = "start"
 
-borderImage :: Txt
-borderImage = "border-image"
+end :: Txt
+end = "end"
 
-borderImageSource :: Txt
-borderImageSource = "border-image-source"
+align :: Txt
+align = "align"
 
-borderImageSlice :: Txt
-borderImageSlice = "border-image-slice"
+span :: Txt
+span = "span"
 
-borderImageWidth :: Txt
-borderImageWidth = "border-image-width"
+self :: Txt
+self = "self"
 
-borderImageOutset :: Txt
-borderImageOutset = "border-image-outset"
+positive :: Txt
+positive = "positive"
 
-borderImageRepeat :: Txt
-borderImageRepeat = "border-image-repeat"
+orient :: Txt
+orient = "orient"
+
+stretch :: Txt
+stretch = "stretch"
+
+center :: Txt
+center = "center"
+
+min :: Txt
+min = "min"
+
+max :: Txt
+max = "max"
+
+fill :: Txt
+fill = "fill"
+
+scroll :: Txt
+scroll = "scroll"
+
+alias :: Txt
+alias = "alias"
+
+
+n :: Txt
+n = "n"
+
+e :: Txt
+e = "e"
+
+w :: Txt
+w = "w"
+
+ne :: Txt
+ne = "ne"
+
+ns :: Txt
+ns = "ns"
+
+nw :: Txt
+nw = "nw"
+
+nesw :: Txt
+nesw = "nesw"
+
+nwse :: Txt
+nwse = "nwse"
+
+ew :: Txt
+ew = "ew"
+
+se :: Txt
+se = "se"
+
+sw :: Txt
+sw = "sw"
+
+cursor :: Txt
+cursor = "cursor"
+
+text :: Txt
+text = "text"
+
+pointer :: Txt
+pointer = "pointer"
+
+col :: Txt
+col = "col"
+
+copy :: Txt
+copy = "copy"
+
+crosshair :: Txt
+crosshair = "crosshair"
+
+grab :: Txt
+grab = "grab"
+
+grabbing :: Txt
+grabbing = "grabbing"
+
+help :: Txt
+help = "help"
+
+move :: Txt
+move = "move"
+
+resize :: Txt
+resize = "resize"
+
+no :: Txt
+no = "no"
+
+drop :: Txt
+drop = "drop"
+
+not :: Txt
+not = "not"
+
+allowed :: Txt
+allowed = "allowed"
+
+wait :: Txt
+wait = "wait"
+
+zoom :: Txt
+zoom = "zoom"
+
+zoomin :: Txt
+zoomin = zoom-"in"
+
+out :: Txt
+out = "out"
+
+vertical :: Txt
+vertical = "vertical"
+
+background :: Txt
+background = "background"
+
+color :: Txt
+color = "color"
+
+image :: Txt
+image = "image"
+
+repeat :: Txt
+repeat = "repeat"
+
+attachment :: Txt
+attachment = "attachment"
+
+position :: Txt
+position = "position"
+
+size :: Txt
+size = "size"
+
+cover :: Txt
+cover = "cover"
+
+origin :: Txt
+origin = "origin"
+
+clip :: Txt
+clip = "clip"
+
+border :: Txt
+border = "border"
 
 outline :: Txt
 outline = "outline"
 
-outlineStyle :: Txt
-outlineStyle = "outline-style"
+style :: Txt
+style = "style"
 
-outlineWidth :: Txt
-outlineWidth = "outline-width"
+width :: Txt
+width = "width"
 
-outlineColor :: Txt
-outlineColor = "outline-color"
+offset :: Txt
+offset = "offset"
 
-outlineOffset :: Txt
-outlineOffset = "outline-offset"
+source :: Txt
+source = "source"
 
-borderTop :: Txt
-borderTop = "border-top"
+slice :: Txt
+slice = "slice"
 
-borderTopImage :: Txt
-borderTopImage = "border-top-image"
+outset :: Txt
+outset = "outset"
 
-borderRight :: Txt
-borderRight = "border-right"
+top :: Txt
+top = "top"
 
-borderRightImage :: Txt
-borderRightImage = "border-right-image"
+bottom :: Txt
+bottom = "bottom"
 
-borderBottom :: Txt
-borderBottom = "border-bottom"
+left :: Txt
+left = "left"
 
-borderBottomImage :: Txt
-borderBottomImage = "border-bottom-image"
+right :: Txt
+right = "right"
 
-borderLeft :: Txt
-borderLeft = "border-left"
-
-borderLeftImage :: Txt
-borderLeftImage = "border-left-image"
-
-borderRadius :: Txt
-borderRadius = "border-radius"
-
-borderTopRightRadius :: Txt
-borderTopRightRadius = "border-top-right-radius"
-
-borderBottomRightRadius :: Txt
-borderBottomRightRadius = "border-bottom-right-radius"
-
-borderBottomLeftRadius :: Txt
-borderBottomLeftRadius = "border-bottom-left-radius"
-
-borderTopLeftRadius :: Txt
-borderTopLeftRadius = "border-top-left-radius"
-
-borderStyle :: Txt
-borderStyle = "border-style"
-
-borderTopStyle :: Txt
-borderTopStyle = "border-top-style"
-
-borderRightStyle :: Txt
-borderRightStyle = "border-right-style"
-
-borderBottomStyle :: Txt
-borderBottomStyle = "border-bottom-style"
-
-borderLeftStyle :: Txt
-borderLeftStyle = "border-left-style"
-
-borderWidth :: Txt
-borderWidth = "border-width"
-
-borderTopWidth :: Txt
-borderTopWidth = "border-top-width"
-
-borderRightWidth :: Txt
-borderRightWidth = "border-right-width"
-
-borderBottomWidth :: Txt
-borderBottomWidth = "border-bottom-width"
-
-borderLeftWidth :: Txt
-borderLeftWidth = "border-left-width"
-
-borderColor :: Txt
-borderColor = "border-color"
-
-borderTopColor :: Txt
-borderTopColor = "border-top-color"
-
-borderRightColor :: Txt
-borderRightColor = "border-right-color"
-
-borderBottomColor :: Txt
-borderBottomColor = "border-bottom-color"
-
-borderLeftColor :: Txt
-borderLeftColor = "border-left-color"
+radius :: Txt
+radius = "radius"
 
 collapse :: Txt
 collapse = "collapse"
 
-borderCollapse :: Txt
-borderCollapse = "border-collapse"
-
-borderSpacing :: Txt
-borderSpacing = "border-spacing"
+separate :: Txt
+separate = "separate"
 
 dotted :: Txt
 dotted = "dotted"
@@ -404,20 +350,62 @@ ridge = "ridge"
 inset :: Txt
 inset = "inset"
 
-outset :: Txt
-outset = "outset"
+box :: Txt
+box = "box"
 
-listStyle :: Txt
-listStyle = "list-style"
+sizing :: Txt
+sizing = "sizing"
 
-listStyleType :: Txt
-listStyleType = "list-style-type"
+margin :: Txt
+margin = "margin"
 
-listStyleImage :: Txt
-listStyleImage = "list-style-image"
+padding :: Txt
+padding = "padding"
 
-listStylePosition :: Txt
-listStylePosition = "list-style-position"
+height :: Txt
+height = "height"
+
+filter_ :: Txt
+filter_ = "filter"
+
+space :: Txt
+space = "space"
+
+around :: Txt
+around = "around"
+
+between :: Txt
+between = "between"
+
+evenly :: Txt
+evenly = "evenly"
+
+distribute :: Txt
+distribute = "distribute"
+
+order :: Txt
+order = "order"
+
+basis :: Txt
+basis = "basis"
+
+grow :: Txt
+grow = "grow"
+
+shrink :: Txt
+shrink = "shrink"
+
+direction :: Txt
+direction = "direction"
+
+reverse :: Txt
+reverse = "reverse"
+
+horizontal :: Txt
+horizontal = "horizontal"
+
+type_ :: Txt
+type_ = "type"
 
 inside :: Txt
 inside = "inside"
@@ -431,14 +419,20 @@ disc = "disc"
 armenian :: Txt
 armenian = "armenian"
 
-cjkIdeographic :: Txt
-cjkIdeographic = "cjk-ideographic"
+cjk :: Txt
+cjk = "cjk"
+
+ideographic :: Txt
+ideographic = "ideographic"
 
 decimal :: Txt
 decimal = "decimal"
 
-decimalLeadingZero :: Txt
-decimalLeadingZero = "decimal-leading-zero"
+leading :: Txt
+leading = "leading"
+
+zero :: Txt
+zero = "zero"
 
 georgian :: Txt
 georgian = "georgian"
@@ -452,92 +446,128 @@ hiragana = "hiragana"
 katakana :: Txt
 katakana = "katakana"
 
-katakanaIroha :: Txt
-katakanaIroha = "katakana-iroha"
+iroha :: Txt
+iroha = "iroha"
 
-lowerAlpha :: Txt
-lowerAlpha = "lower-alpha"
+lower :: Txt
+lower = "lower"
 
-lowerGreek :: Txt
-lowerGreek = "lower-greek"
+alpha :: Txt
+alpha = "alpha"
 
-lowerLatin :: Txt
-lowerLatin = "lower-latin"
+greek :: Txt
+greek = "greek"
 
-lowerRoman :: Txt
-lowerRoman = "lower-roman"
+latin :: Txt
+latin = "latin"
+
+roman :: Txt
+roman = "roman"
 
 square :: Txt
 square = "square"
 
-upperAlpha :: Txt
-upperAlpha = "upper-alpha"
+none :: Txt
+none = "none"
 
-upperLatin :: Txt
-upperLatin = "upper-latin"
+initial :: Txt
+initial = "initial"
 
-upperRoman :: Txt
-upperRoman = "upper-roman"
+inherit :: Txt
+inherit = "inherit"
 
-zIndex :: Txt
-zIndex = "z-index"
+normal :: Txt
+normal = "normal"
 
-display :: Txt
-display = "display"
+auto :: Txt
+auto = "auto"
 
-inline :: Txt
-inline = "inline"
+emptyQuotes :: Txt
+emptyQuotes = "\"\""
 
-block :: Txt
-block = "block"
+noBreakSpace :: Txt
+noBreakSpace = "\"\\00a0\""
 
-inlineBlock :: Txt
-inlineBlock = "inline-block"
+true :: Txt
+true = "true"
 
-table :: Txt
-table = "table"
+false :: Txt
+false = "false"
 
-inlineTable :: Txt
-inlineTable = "inline-table"
+nav :: Txt
+nav = "nav"
 
-listItem :: Txt
-listItem = "list-item"
+down :: Txt
+down = "down"
 
-runIn :: Txt
-runIn = "run-in"
+up :: Txt
+up = "up"
 
-tableCaption :: Txt
-tableCaption = "table-caption"
+sizes :: Txt
+sizes = "sizes"
 
-captionSide :: Txt
-captionSide = "caption-side"
+srcset :: Txt
+srcset = "srcset"
 
-emptyCells :: Txt
-emptyCells = "empty-cells"
+subject :: Txt
+subject = "subject"
 
-tableCell :: Txt
-tableCell = "table-cell"
+button :: Txt
+button = "button"
 
-tableLayout :: Txt
-tableLayout = "table-layout"
+touch :: Txt
+touch = "touch"
 
-tableColumn :: Txt
-tableColumn = "table-column"
+action :: Txt
+action = "action"
 
-tableColumnGroup :: Txt
-tableColumnGroup = "table-column-group"
+events :: Txt
+events = "events"
 
-tableFooterGroup :: Txt
-tableFooterGroup = "table-footer-group"
+empty :: Txt
+empty = "empty"
 
-tableHeaderGroup :: Txt
-tableHeaderGroup = "table-header-group"
+cells :: Txt
+cells = "cells"
 
-tableRow :: Txt
-tableRow = "table-row"
+default_ :: Txt
+default_ = "default"
 
-tableRowGroup :: Txt
-tableRowGroup = "table-row-group"
+all :: Txt
+all = "all"
+
+xmlns :: Txt
+xmlns = "xmlns"
+
+forwards :: Txt
+forwards = "forwards"
+
+backwards :: Txt
+backwards = "backwards"
+
+side :: Txt
+side = "side"
+
+closest :: Txt
+closest = "closest"
+
+farthest :: Txt
+farthest = "farthest"
+
+corner :: Txt
+corner = "corner"
+
+fixed :: Txt
+fixed = "fixed"
+
+absolute :: Txt
+absolute = "absolute"
+
+static :: Txt
+static = "static"
+
+relative :: Txt
+relative = "relative"
 
 both :: Txt
 both = "both"
@@ -548,116 +578,44 @@ float = "float"
 clear :: Txt
 clear = "clear"
 
-position :: Txt
-position = "position"
+index :: Txt
+index = "index"
 
-static :: Txt
-static = "static"
+valign :: Txt
+valign = "valign"
 
-relative :: Txt
-relative = "relative"
+to :: Txt
+to = "to"
 
-fixed :: Txt
-fixed = "fixed"
+from :: Txt
+from = "from"
 
-absolute :: Txt
-absolute = "absolute"
+rtl :: Txt
+rtl = "rtl"
 
-top :: Txt
-top = "top"
-
-right :: Txt
-right = "right"
-
-bottom :: Txt
-bottom = "bottom"
-
-left :: Txt
-left = "left"
-
-overflow :: Txt
-overflow = "overflow"
-
-visible :: Txt
-visible = "visible"
-
-hidden :: Txt
-hidden = "hidden"
-
-scroll :: Txt
-scroll = "scroll"
-
-overflowX :: Txt
-overflowX = "overflow-x"
-
-overflowY :: Txt
-overflowY = "overflow-y"
-
-clip :: Txt
-clip = "clip"
-
-rect :: (Num n, ToTxt n) => (n,n,n,n) -> Txt
-rect (t,r,b,l) = "rect(" <> (Txt.intercalate "," $ map toTxt [t,r,b,l]) <> ")"
-
-lineHeight :: Txt
-lineHeight = "line-height"
-
-height :: Txt
-height = "height"
-
-width :: Txt
-width = "width"
-
-maxWidth :: Txt
-maxWidth = "max-width"
-
-minWidth :: Txt
-minWidth = "min-width"
-
-maxHeight :: Txt
-maxHeight = "max-height"
-
-minHeight :: Txt
-minHeight = "min-height"
-
-boxSizing :: Txt
-boxSizing = "box-sizing"
-
-borderBox :: Txt
-borderBox = "border-box"
-
-contentBox :: Txt
-contentBox = "content-box"
+ltr :: Txt
+ltr = "ltr"
 
 font :: Txt
 font = "font"
 
-fontFamily :: Txt
-fontFamily = "font-family"
+family :: Txt
+family = "family"
 
-fontWeight :: Txt
-fontWeight = "font-weight"
+weight :: Txt
+weight = "weight"
 
-fontSize :: Txt
-fontSize = "font-size"
+xx :: Txt
+xx = "xx"
 
-xxSmall :: Txt
-xxSmall = "xx-small"
-
-xSmall :: Txt
-xSmall = "x-small"
+small :: Txt
+small = "small"
 
 medium :: Txt
 medium = "medium"
 
 large :: Txt
 large = "large"
-
-xLarge :: Txt
-xLarge = "x-large"
-
-xxLarge :: Txt
-xxLarge = "xx-large"
 
 smaller :: Txt
 smaller = "smaller"
@@ -674,8 +632,8 @@ regular = "regular"
 antialiased :: Txt
 antialiased = "antialiased"
 
-weight :: Int -> Txt
-weight = toTxt
+optimized :: Txt
+optimized = "optimized"
 
 bold :: Txt
 bold = "bold"
@@ -686,26 +644,14 @@ bolder = "bolder"
 lighter :: Txt
 lighter = "lighter"
 
-boxShadow :: Txt
-boxShadow = "box-shadow"
+shadow :: Txt
+shadow = "shadow"
 
-textDecoration :: Txt
-textDecoration = "text-decoration"
+decoration :: Txt
+decoration = "decoration"
 
-textDecorationColor :: Txt
-textDecorationColor = "text-decoration-color"
-
-textDecorationLine :: Txt
-textDecorationLine = "text-decoration-line"
-
-textDecorationStyle :: Txt
-textDecorationStyle = "text-decoration-style"
-
-textAlign :: Txt
-textAlign = "text-align"
-
-verticalAlign :: Txt
-verticalAlign = "vertical-align"
+line :: Txt
+line = "line"
 
 baseline :: Txt
 baseline = "baseline"
@@ -713,14 +659,8 @@ baseline = "baseline"
 middle :: Txt
 middle = "middle"
 
-textIndent :: Txt
-textIndent = "text-indent"
-
-textJustify :: Txt
-textJustify = "text-justify"
-
-textOverflow :: Txt
-textOverflow = "text-overflow"
+indent :: Txt
+indent = "indent"
 
 ellipsis :: Txt
 ellipsis = "ellipsis"
@@ -728,11 +668,8 @@ ellipsis = "ellipsis"
 underline :: Txt
 underline = "underline"
 
-textShadow :: Txt
-textShadow = "text-shadow"
-
-textTransform :: Txt
-textTransform = "text-transform"
+transform :: Txt
+transform = "transform"
 
 capitalize :: Txt
 capitalize = "capitalize"
@@ -743,14 +680,17 @@ uppercase = "uppercase"
 lowercase :: Txt
 lowercase = "lowercase"
 
-unicodeBidi :: Txt
-unicodeBidi = "unicode-bidi"
+unicode :: Txt
+unicode = "unicode"
 
-bidiOverride :: Txt
-bidiOverride = "bidir-override"
+bidi :: Txt
+bidi = "bidi"
 
-whiteSpace :: Txt
-whiteSpace = "white-space"
+override :: Txt
+override = "override"
+
+hyphens :: Txt
+hyphens = "hyphens"
 
 wrap :: Txt
 wrap = "wrap"
@@ -758,310 +698,53 @@ wrap = "wrap"
 nowrap :: Txt
 nowrap = "nowrap"
 
-wrapreverse :: Txt
-wrapreverse = "wrap-reverse"
+pack :: Txt
+pack = "pack"
 
-preLine :: Txt
-preLine = "pre-line"
+pre :: Txt
+pre = "pre"
 
-preWrap :: Txt
-preWrap = "pre-wrap"
+word :: Txt
+word = "word"
 
-wordWrap :: Txt
-wordWrap = "word-wrap"
+break :: Txt
+break = "break"
 
-wordBreak :: Txt
-wordBreak = "word-break"
+spacing :: Txt
+spacing = "spacing"
 
-wordSpacing :: Txt
-wordSpacing = "word-spacing"
+jump :: Txt
+jump = "jump"
 
-breakWord :: Txt
-breakWord = "break-word"
-
-to :: Txt -> Txt
-to dir = "to " <> dir
-
-from :: Txt -> Txt
-from dir = "from " <> dir
-
-closestSide :: Txt
-closestSide = "closest-side"
-
-farthestSide :: Txt
-farthestSide = "farthest-side"
-
-closestCorner :: Txt
-closestCorner = "closest-corner"
-
-farthestCorner :: Txt
-farthestCorner = "farthest-corner"
-
-background :: Txt
-background = "background"
-
-backgroundColor :: Txt
-backgroundColor = "background-color"
-
-backgroundImage :: Txt
-backgroundImage = "background-image"
-
-url :: Txt -> Txt
-url u = "url(" <> u <> ")"
-
-backgroundRepeat :: Txt
-backgroundRepeat = "background-repeat"
-
-noRepeat :: Txt
-noRepeat = "no-repeat"
-
-backgroundAttachment :: Txt
-backgroundAttachment = "background-attachment"
-
-backgroundPosition :: Txt
-backgroundPosition = "background-position"
-
-backgroundSize :: Txt
-backgroundSize = "background-size"
-
-cover :: Txt
-cover = "cover"
-
-backgroundOrigin :: Txt
-backgroundOrigin = "background-origin"
-
-backgroundClip :: Txt
-backgroundClip = "background-clip"
-
-imageFilter :: Txt
-imageFilter = "filter"
-
-default_ :: Txt
-default_ = "default"
-
-cursor :: Txt
-cursor = "cursor"
-
-pointer :: Txt
-pointer = "pointer"
-
-alias :: Txt
-alias = "alias"
-
-allScroll :: Txt
-allScroll = "all-scroll"
-
-cell :: Txt
-cell = "cell"
-
-contextMenu :: Txt
-contextMenu = "context-menu"
-
-colResize :: Txt
-colResize = "col-resize"
-
-copy :: Txt
-copy = "copy"
-
-crosshair :: Txt
-crosshair = "crosshair"
-
-eResize :: Txt
-eResize = "e-resize"
-
-ewResize :: Txt
-ewResize = "ew-resize"
-
-grab :: Txt
-grab = "grab"
-
-grabbing :: Txt
-grabbing = "grabbing"
-
-help :: Txt
-help = "help"
-
-move :: Txt
-move = "move"
-
-nResize :: Txt
-nResize = "n-resize"
-
-neResize :: Txt
-neResize = "ne-resize"
-
-neswResize :: Txt
-neswResize = "nesw-resize"
-
-nsResize :: Txt
-nsResize = "ns-resize"
-
-nwResize :: Txt
-nwResize = "nw-resize"
-
-nwseResize :: Txt
-nwseResize = "nwse-resize"
-
-noDrop :: Txt
-noDrop = "no-drop"
-
-notAllowed :: Txt
-notAllowed = "not-allowed"
-
-rowResize :: Txt
-rowResize = "row-resize"
-
-sResize :: Txt
-sResize = "s-resize"
-
-seResize :: Txt
-seResize = "se-resize"
-
-swResize :: Txt
-swResize = "sw-resize"
-
-vText :: Txt
-vText = "vertical-text"
-
-wResize :: Txt
-wResize = "w-resize"
-
-wait :: Txt
-wait = "wait"
-
-zoomIn :: Txt
-zoomIn = "zoom-in"
-
-zoomOut :: Txt
-zoomOut = "zoom-out"
-
-navDown :: Txt
-navDown = "nav-down"
-
-navIndex :: Txt
-navIndex = "nav-index"
-
-navLeft :: Txt
-navLeft = "nav-left"
-
-navRight :: Txt
-navRight = "nav-right"
-
-navUp :: Txt
-navUp = "nav-up"
-
-matrix :: Double -> Double -> Double -> Double -> Int -> Int -> Txt
-matrix scX skY skX scY tX tY =
-  "matrix(" <> dec scX <> ","
-            <> dec skY <> ","
-            <> dec skX <> ","
-            <> dec scY <> ","
-            <> int tX  <> ","
-            <> int tY  <> ")"
-
-scale :: Txt -> Txt
-scale opts1 = "scale(" <> opts1 <> ")"
-
-scale2 :: Txt -> Txt -> Txt
-scale2 opts1 opts2 = "scale(" <> opts1 <> "," <> opts2 <> ")"
-
-scaleX :: Txt -> Txt
-scaleX opts1 = "scaleX(" <> opts1 <> ")"
-
-scaleY :: Txt -> Txt
-scaleY opts1 = "scaleY(" <> opts1 <> ")"
-
-scaleZ :: Txt -> Txt
-scaleZ opts1 = "scaleZ(" <> opts1 <> ")"
-
-scale3d :: Txt -> Txt -> Txt
-scale3d opts1 opts2 = "scale3d(" <> opts1 <> "," <> opts2 <> ")"
-
-rotate :: Txt -> Txt
-rotate opts = "rotate(" <> opts <> ")"
-
-translate :: Txt -> Txt
-translate opts = "translate(" <> opts <> ")"
-
-translateX :: Txt -> Txt
-translateX opts1 = "translateX(" <> opts1 <> ")"
-
-translateY :: Txt -> Txt
-translateY opts1 = "translateY(" <> opts1 <> ")"
-
-translateZ :: Txt -> Txt
-translateZ opts1 = "translateZ(" <> opts1 <> ")"
-
-translate3d :: Txt -> Txt -> Txt -> Txt
-translate3d o1 o2 o3 = "translate3d(" <> o1 <> "," <> o2 <> "," <> o3 <> ")"
-
-matrix3d :: Double -> Double -> Double -> Double
-         -> Double -> Double -> Double -> Double
-         -> Double -> Double -> Double -> Double
-         -> Double -> Double -> Double -> Double
-         -> Txt
-matrix3d a1 b1 c1 d1 a2 b2 c2 d2 a3 b3 c3 d3 a4 b4 c4 d4 =
-  "matrix3d(" <> dec a1 <> ","
-              <> dec b1 <> ","
-              <> dec c1 <> ","
-              <> dec d1 <> ","
-              <> dec a2 <> ","
-              <> dec b2 <> ","
-              <> dec c2 <> ","
-              <> dec d2 <> ","
-              <> dec a3 <> ","
-              <> dec b3 <> ","
-              <> dec c3 <> ","
-              <> dec d3 <> ","
-              <> dec a4 <> ","
-              <> dec b4 <> ","
-              <> dec c4 <> ","
-              <> dec d4 <> ")"
-
-skew :: Double -> Double -> Txt
-skew opts1 opts2 = "skew(" <> deg opts1 <> "," <> deg opts2 <> ")"
-
-skewX :: Double -> Txt
-skewX opts1 = "skewX(" <> deg opts1 <> ")"
-
-skewY :: Double -> Txt
-skewY opts1 = "skewY(" <> deg opts1 <> ")"
-
-rotateX :: Double -> Txt
-rotateX opts = "rotateX(" <> deg opts <> ")"
-
-rotateY :: Double -> Txt
-rotateY opts = "rotateY(" <> deg opts <> ")"
-
-rotateZ :: Double -> Txt
-rotateZ opts = "rotateZ(" <> deg opts <> ")"
-
-rotate3d :: Double -> Double -> Txt
-rotate3d opts1 opts2 = "rotate3d(" <> deg opts1 <> "," <> deg opts2 <> ")"
+step :: Txt
+step = "step"
 
 perspective :: Txt
 perspective = "perspective"
 
-perspectiveOrigin :: Txt
-perspectiveOrigin = "perspective-origin"
-
-backfaceVisibility :: Txt
-backfaceVisibility = "backface-visibility"
+backface :: Txt
+backface = "backface"
 
 transition :: Txt
 transition = "transition"
 
-transitionDelay :: Txt
-transitionDelay = "transition-delay"
+delay :: Txt
+delay = "delay"
 
-transitionDuration :: Txt
-transitionDuration = "transition-duration"
+duration :: Txt
+duration = "duration"
 
-transitionProperty :: Txt
-transitionProperty = "transition-property"
+property :: Txt
+property = "property"
 
-transitionTimingFunction :: Txt
-transitionTimingFunction = "transition-timing-function"
+timing :: Txt
+timing = "timing"
+
+function :: Txt
+function = "function"
+
+mode :: Txt
+mode = "mode"
 
 infinite :: Txt
 infinite = "infinite"
@@ -1069,63 +752,184 @@ infinite = "infinite"
 linear :: Txt
 linear = "linear"
 
-linearGradient :: Txt -> Txt
-linearGradient lg = "linear-gradient(" <> lg <> ")"
-
-willChange :: Txt
-willChange = "will-change"
-
 animation :: Txt
 animation = "animation"
 
-transform :: Txt
-transform = "transform"
+name :: Txt
+name = "name"
 
-transformStyle :: Txt
-transformStyle = "transform-style"
+paused :: Txt
+paused = "paused"
 
-transformOrigin :: Txt
-transformOrigin = "transform-origin"
+play :: Txt
+play = "play"
 
-preserve3d :: Txt
-preserve3d = "preserve-3d"
+state :: Txt
+state = "state"
+
+iteration :: Txt
+iteration = "iteration"
+
+count :: Txt
+count = "count"
 
 ease :: Txt
 ease = "ease"
 
-easeIn :: Txt
-easeIn = "ease-in"
+easein :: Txt
+easein = ease-"in"
 
-easeOut :: Txt
-easeOut = "ease-out"
+easeinout :: Txt
+easeinout = ease-"in"-out
 
-easeInOut :: Txt
-easeInOut = "ease-in-out"
+will :: Txt
+will = "will"
 
-cubicBezier :: (Double,Double,Double,Double) -> Txt
-cubicBezier (n1,n2,n3,n4) =
-  "cubic-bezier(" <> (Txt.intercalate "," $ map toTxt [n1,n2,n3,n4]) <> ")"
+change :: Txt
+change = "change"
 
-visibility :: Txt
-visibility = "visibility"
+user :: Txt
+user = "user"
 
-all :: Txt
-all = "all"
+select :: Txt
+select = "select"
 
-direction :: Txt
-direction = "direction"
+scrolling :: Txt
+scrolling = "scrolling"
 
-rtl :: Txt
-rtl = "rtl"
+preserve3d :: Txt
+preserve3d = "preserve-3d"
 
-ltr :: Txt
-ltr = "ltr"
+webkit :: Txt
+webkit = "-webkit"
+
+moz :: Txt
+moz = "-moz"
+
+microsoft :: Txt
+microsoft = "-ms"
+
+(%) :: Txt -> Txt
+(%) p = p <> "% "
+
+px :: Txt
+px = "px"
+
+cm :: Txt
+cm = "cm"
+
+mm :: Txt
+mm = "mm"
+
+q :: Txt
+q = "Q"
+
+inch :: Txt
+inch = "in"
+
+pc :: Txt
+pc = "pc"
+
+pt :: Txt
+pt = "pt"
+
+-- <angle>
+
+deg :: Txt
+deg = "deg"
+
+rad :: Txt
+rad = "rad"
+
+grad :: Txt
+grad = "grad"
+
+turn :: Txt
+turn = "turn"
+
+-- <resolution>
+
+dpi :: Txt
+dpi = "dpi"
+
+dpcm :: Txt
+dpcm = "dpcm"
+
+dppx :: Txt
+dppx = "dppx"
+
+-- <flex>
+
+fr :: Txt
+fr = "fr"
+
+-- <frequency>
+
+hz :: Txt
+hz = "hz"
+
+kHz :: Txt
+kHz = "kHz"
+
+-- <font-relative lengths>
+
+cap :: Txt
+cap = "cap"
+
+ch :: Txt
+ch = "ch"
+
+em :: Txt
+em = "em"
+
+ex :: Txt
+ex = "ex"
+
+ic :: Txt
+ic = "ic"
+
+lh :: Txt
+lh = "lh"
+
+rem :: Txt
+rem = "rem"
+
+rlh :: Txt
+rlh = "rlh"
+
+-- <viewport-percentage lengths>
+
+vh :: Txt
+vh = "vh"
+
+vw :: Txt
+vw = "vw"
+
+vi :: Txt
+vi = "vi"
+
+vb :: Txt
+vb = "vb"
+
+vmin :: Txt
+vmin = "vmin"
+
+vmax :: Txt
+vmax = "vmax"
+
+-- <time>
+
+s :: Txt
+s = "s"
+
+ms :: Txt
+ms = "ms"
+
+bgcolor :: Txt
+bgcolor = "bgcolor"
 
 currentColor :: Txt
 currentColor = "currentColor"
-
-alpha :: Txt -> Txt
-alpha alph = "alpha(" <> alph <> ")"
 
 opacity :: Txt
 opacity = "opacity"
@@ -1133,21 +937,65 @@ opacity = "opacity"
 transparent :: Txt
 transparent = "transparent"
 
-hex :: Txt -> Txt
-hex rgb = "#" <> rgb
-  -- "#" <> (pack $ showHex rgb []) -- doesn't work with leading zeros
+(#) :: Int -> Txt
+(#) = hex
 
-rgb :: (Int,Int,Int) -> Txt
-rgb (r,g,b) = "rgb(" <> (Txt.intercalate "," [int r,int g,int b]) <> ")"
+-- There is a corner-case that isn't covered with this approach:
+--
+-- > hex 0x000fff => #fff => #ffffff
+--
+hex :: Int -> Txt
+hex rgb = "#" <> code
+  where
+    code :: Txt
+    code = toTxt $ pad $ showHex rgb []
 
-rgba :: (Int,Int,Int,Double) -> Txt
-rgba (r,g,b,a) = "rgba(" <> (Txt.intercalate "," $ [int r,int g,int b,dec a]) <> ")"
+    pad :: String -> String
+    pad s@(List.length -> n) 
+      | n == 3    = s
+      | otherwise = List.replicate (6 - n) '0' <> s
 
-hsl :: (Int,Double,Double) -> Txt
-hsl (h,s,l) = "hsl(" <> (Txt.intercalate "," [int h,per s,per l]) <> ")"
+-- There is a corner-case that isn't covered with this approach:
+--
+-- > hex 0x0000ffff => #ffff => #ffffffff
+--
+hexa :: Int -> Txt
+hexa rgba = "#" <> code
+  where
+    code :: Txt
+    code = toTxt $ pad $ showHex rgba []
 
-hsla :: (Int,Double,Double,Double) -> Txt
-hsla (h,s,l,a) = "hsla(" <> (Txt.intercalate "," [int h,per s, per l,dec a]) <> ")"
+    pad :: String -> String
+    pad s@(List.length -> n)
+      | n == 4    = s
+      | otherwise = List.replicate (8 - n) '0' <> s
+
+{-# INLINE hsba #-}
+hsba :: (Int, Double, Double, Double) -> Txt
+hsba (_, _, 0, a) = "hsla(0,0%,0%," <> dec a <> ")"
+hsba (h, s, b, a) =
+  let
+    l = (b / 2) * (2 - (s / 100))
+    s'
+      | l < 50    = (b * s) / (l * 2)
+      | l == 100  = (b * s)
+      | otherwise = (b * s) / (200 - l * 2)
+  in "hsla(" <> elems [int h,percent s',percent l,dec a] <> ")"
+
+hsb :: (Int, Double, Double) -> Txt
+hsb (h, s, b) = hsba (h, s, b, 1)
+
+rgb :: (Txt,Txt,Txt) -> Txt
+rgb (r,g,b) = "rgb(" <> elems [r,g,b] <> ")"
+
+rgba :: (Txt,Txt,Txt,Txt) -> Txt
+rgba (r,g,b,a) = "rgba(" <> elems [r,g,b,a] <> ")"
+
+hsl :: (Txt,Txt,Txt) -> Txt
+hsl (h,s,l) = "hsl(" <> elems [h,s,l] <> ")"
+
+hsla :: (Txt,Txt,Txt,Txt) -> Txt
+hsla (h,s,l,a) = "hsla(" <> elems [h,s,l,a] <> ")"
 
 aqua :: Txt
 aqua = "aqua"
@@ -1583,87 +1431,3 @@ yellow = "yellow"
 
 yellowgreen :: Txt
 yellowgreen = "yellowgreen"
-
-alignSelf :: Txt
-alignSelf = "align-self"
-
-alignContent :: Txt
-alignContent = "align-content"
-
-justifyContent :: Txt
-justifyContent = "justify-content"
-
-alignItems :: Txt
-alignItems = "align-items"
-
-flexStart :: Txt
-flexStart = "flex-start"
-
-flexEnd :: Txt
-flexEnd = "flex-end"
-
-stretch :: Txt
-stretch = "stretch"
-
-end :: Txt
-end = "end"
-
-start :: Txt
-start = "start"
-
-spaceAround :: Txt
-spaceAround = "space-around"
-
-spaceBetween :: Txt
-spaceBetween = "space-between"
-
-distribute :: Txt
-distribute = "distribute"
-
-justify :: Txt
-justify = "justify"
-
-order :: Txt
-order = "order"
-
-flexBasis :: Txt
-flexBasis = "flex-basis"
-
-flexGrow :: Txt
-flexGrow = "flex-grow"
-
-flex :: Txt
-flex = "flex"
-
-flexFlow :: Txt
-flexFlow = "flex-flow"
-
-flexDirection :: Txt
-flexDirection = "flex-direction"
-
-columnReverse :: Txt
-columnReverse = "column-reverse"
-
-vertical :: Txt
-vertical = "vertical"
-
-reverse :: Txt
-reverse = "reverse"
-
-rowReverse :: Txt
-rowReverse = "row-reverse"
-
-horizontal :: Txt
-horizontal = "horizontal"
-
-flexWrap :: Txt
-flexWrap = "flex-wrap"
-
-row :: Txt
-row = "row"
-
-column :: Txt
-column = "column"
-
-xmlns :: Txt
-xmlns = "xmlns"
