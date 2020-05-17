@@ -858,7 +858,7 @@ grayscale :: Txt
 grayscale = "grayscale"
 
 (%) :: Txt -> Txt
-(%) p = p <> "% "
+(%) p = p <> "%"
 
 px :: Txt
 px = "px"

@@ -18,7 +18,7 @@ neg :: Num a => a -> a
 neg = negate
 
 per :: Txt
-per = "% "
+per = percent
 
 fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
