@@ -2,7 +2,7 @@
 module Pure.Data.Styles.Functions where
 
 import Pure.Data.Styles.Orphans
-import Pure.Data.Txt (Txt)
+import Pure.Data.Txt as Txt (Txt,replace) 
 
 infixr 4 <<>>
 (<<>>) :: Txt -> Txt -> Txt
@@ -67,7 +67,13 @@ rems :: Real a => a -> Txt
 rems rs = rtf rs ("rem" :: Txt)
 
 calc :: Txt -> Txt
-calc c = "calc(" <> c <> ")"
+calc c = "calc(" <> process c <> ")"
+  where
+    process = Txt.replace "-" " - "
+            . Txt.replace "*" " * "
+            . Txt.replace "+" " + "
+            . Txt.replace "/" " / "
+
 
 rect :: (Txt,Txt,Txt,Txt) -> Txt
 rect (t,r,b,l) = "rect(" <> elems [t,r,b,l] <> ")"

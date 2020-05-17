@@ -398,6 +398,12 @@ between = "between"
 evenly :: Txt
 evenly = "evenly"
 
+even :: Txt
+even = "even"
+
+odd :: Txt
+odd = "odd"
+
 distribute :: Txt
 distribute = "distribute"
 
