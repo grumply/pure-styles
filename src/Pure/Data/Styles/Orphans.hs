@@ -18,7 +18,7 @@ instance Num (Txt -> Txt) where
   negate a = \x -> negate (a x)
   abs = error "abs not defined for (Txt -> Txt)"
   signum = error "signum not defined for (Txt -> Txt)"
-  fromInteger a = \x -> toTxt a <> x
+  fromInteger a = \x -> fromInteger a <> x
 
 -- Note that css property names will have any spaces removed, 
 -- so it is possible to use the `-` to construct property names:
@@ -29,18 +29,22 @@ instance Num Txt where
   (-) a b = a <> "-" <> b
   (+) a b = a <> "+" <> b
   (*) a b = a <> "*" <> b
-  negate x = "-" <> x
+  negate x = " -" <> x
   abs = error "abs not defined for Txt"
   signum = error "signum not defined for Txt"
-  fromInteger = toTxt
+  fromInteger i
+    | i < 0 = " " <> toTxt i
+    | otherwise = toTxt i
 
 instance Fractional Txt where
   (/) a b = a <> "/" <> b
   recip = error "recip not defined for Txt"
-  fromRational = toTxt . (fromRational :: Rational -> Double)
+  fromRational r
+    | r < 0 = " " <> toTxt ((fromRational :: Rational -> Double) r)
+    | otherwise = toTxt ((fromRational :: Rational -> Double) r)
 
 instance Fractional (Txt -> Txt) where
   (/) a b = \x -> a x <> "/" <> b x
   recip =  error "recip not defined for (Txt -> Txt)"
-  fromRational a = \x -> toTxt ((fromRational :: Rational -> Double) a) <> x
+  fromRational a = \x -> fromRational a <> x
 
