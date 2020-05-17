@@ -31,6 +31,9 @@ contents = "contents"
 table :: Txt
 table = "table"
 
+layout :: Txt
+layout = "layout"
+
 list :: Txt
 list = "list"
 
@@ -314,6 +317,18 @@ top = "top"
 bottom :: Txt
 bottom = "bottom"
 
+bottomleft :: Txt
+bottomleft = "bottomleft"
+
+bottomright :: Txt
+bottomright = "bottomright"
+
+topleft :: Txt
+topleft = "topleft"
+
+topright :: Txt
+topright = "topright"
+
 left :: Txt
 left = "left"
 
@@ -322,6 +337,9 @@ right = "right"
 
 radius :: Txt
 radius = "radius"
+
+gradient :: Txt
+gradient = "gradient"
 
 collapse :: Txt
 collapse = "collapse"
@@ -793,6 +811,21 @@ user = "user"
 
 select :: Txt
 select = "select"
+
+rendering :: Txt
+rendering = "rendering"
+
+optimize :: Txt
+optimize = "optimize"
+
+legibility :: Txt
+legibility = "legibility"
+
+smoothing :: Txt
+smoothing = "smoothing"
+
+letter :: Txt
+letter = "letter"
 
 scrolling :: Txt
 scrolling = "scrolling"
