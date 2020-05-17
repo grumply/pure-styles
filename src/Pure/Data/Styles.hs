@@ -839,8 +839,17 @@ webkit = "-webkit"
 moz :: Txt
 moz = "-moz"
 
+mozilla :: Txt
+mozilla = moz
+
 microsoft :: Txt
 microsoft = "-ms"
+
+osx :: Txt
+osx = "osx"
+
+grayscale :: Txt
+grayscale = "grayscale"
 
 (%) :: Txt -> Txt
 (%) p = p <> "% "

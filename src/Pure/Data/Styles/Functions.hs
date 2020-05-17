@@ -84,8 +84,8 @@ contrast b = "contrast(" <> b <> ")"
 dropShadow :: Txt -> Txt
 dropShadow b = "drop-shadow(" <> b <> ")"
 
-grayscale :: Txt -> Txt
-grayscale b = "grayscale(" <> b <> ")"
+grayscale_ :: Txt -> Txt
+grayscale_ b = "grayscale(" <> b <> ")"
 
 hueRotate :: Txt -> Txt
 hueRotate b = "hue-rotate(" <> b <> ")"
