@@ -129,6 +129,9 @@ conicGradient g = "conic-gradient(" <> elems g <> ")"
 minmax :: (Txt,Txt) -> Txt
 minmax (l,h) = "minmax(" <> elems [l,h] <> ")"
 
+fitContent :: (Txt,Txt) -> Txt
+fitContent (a,b) = "fit-content(" <> elems [a,b] <> ")"
+
 repeat_ :: (Txt,Txt) -> Txt
 repeat_ (n,x) = "repeat(" <> elems [n,x] <> ")"
 
