@@ -596,6 +596,9 @@ static = "static"
 relative :: Txt
 relative = "relative"
 
+sticky :: Txt
+sticky = "sticky"
+
 both :: Txt
 both = "both"
 
